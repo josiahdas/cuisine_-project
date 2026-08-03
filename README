@@ -1,0 +1,31 @@
+🍽️ Cuisine Classifier
+
+Predicts a recipe's cuisine from its ingredient list using a TF-IDF + Naive Bayes pipeline, deployed as an interactive Streamlit app.
+
+How it works
+Training (train_model.py) — loads ~40,000 labeled recipes (20 cuisines) from train.json, joins each recipe's ingredients into a single string, and fits a TfidfVectorizer → MultinomialNB pipeline via scikit-learn.
+Inference (app.py) — a Streamlit UI where a user types ingredients in free text; the app cleans the input, predicts probabilities across all 20 cuisines, and shows the top 3 with confidence scores.
+Explainability — a lightweight method surfaces which entered ingredients had the strongest TF-IDF weight for the predicted class, so predictions aren't a black box.
+Results
+67.9% held-out accuracy across all 20 cuisine classes
+Trained/evaluated on an 80/20 split of ~40K recipes
+Dataset is significantly imbalanced (7,838 Italian vs. 467 Brazilian recipes), so accuracy is reported on the full multi-class problem rather than a balanced subset
+Tech stack
+
+Python · scikit-learn (TF-IDF, Naive Bayes) · pandas · Streamlit · joblib
+
+Running locally
+bash
+pip install -r requirements.txt
+python train_model.py      # trains and saves cuisine_classifier.pkl
+streamlit run app.py       # launches the UI at localhost:8501
+Files
+File	Purpose
+train_model.py	Trains the TF-IDF + Naive Bayes pipeline and saves the model
+app.py	Streamlit UI for interactive predictions
+train.json / test.json	Recipe dataset (ingredients + cuisine labels)
+cuisine_classifier.pkl	Trained, serialized model
+Possible extensions
+Swap Naive Bayes for a gradient-boosted or transformer-based classifier to push past ~68% accuracy
+Address class imbalance with class weighting or oversampling
+Expose ingredient-level SHAP values for richer explainability 
